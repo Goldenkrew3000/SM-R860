@@ -45,6 +45,11 @@
 #include <linux/fcntl.h>
 #include <linux/fs.h>
 #include <linux/list.h>
+#include <linux/moduleparam.h>
+
+// Add a new module parameter to take in a custom MAC address
+static char* ifxdhd_macaddr = "AABBCCDDEEFF"; // The default MAC address is AA:BB:CC:DD:EE:FF
+module_param(ifxdhd_macaddr, charp, S_IRUGO);
 
 #ifdef DHD_USE_CISINFO
 
@@ -274,18 +279,33 @@ dhd_dump_cis_buf(int size)
 }
 #endif /* DUMP_CIS */
 
+uint8_t ifxdhd_cmdline_mac_convert(char c) {
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    } else if (c >= 'A' && c <= 'F') {
+        return c - 'A' + 10;
+    } else if (c >= 'a' && c <= 'f') {
+        return c - 'a' + 10;
+    }
+}
+
 /* MAC address mangement functions */
 #ifdef READ_MACADDR
 static void
 dhd_create_random_mac(char *buf, unsigned int buf_len)
 {
 	char random_mac[3];
+    int mac_idx = 0;
+    uint8_t cmdline_mac_addr[6];
 
 	memset(random_mac, 0, sizeof(random_mac));
 	get_random_bytes(random_mac, 3);
 
-	snprintf(buf, buf_len, MAC_CUSTOM_FORMAT, 0x00, 0x12, 0x34,
-		(uint32)random_mac[0], (uint32)random_mac[1], (uint32)random_mac[2]);
+    // Convert MAC address cmdline string to 6 uint8_t's, which are then converted to the proper formatting
+    for (mac_idx = 0; mac_idx < 6; mac_idx++) {
+        cmdline_mac_addr[i] = (ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * i]) << 4) | ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * i + 1]);
+    }
+    snprintf(buf, buf_len, MAC_CUSTOM_FORMAT, cmdline_mac_addr[0], cmdline_mac_addr[1], cmdline_mac_addr[2], cmdline_mac_addr[3], cmdline_mac_addr[4], cmdline_mac_addr[5]);
 
 	DHD_ERROR(("%s: The Random Generated MAC ID: %s\n",
 		__FUNCTION__, random_mac));
