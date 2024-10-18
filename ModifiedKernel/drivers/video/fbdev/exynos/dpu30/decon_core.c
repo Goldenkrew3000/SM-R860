@@ -3337,22 +3337,13 @@ static int decon_ioctl(struct fb_info *info, unsigned int cmd,
 	return ret;
 }
 
-static ssize_t decon_fb_read(struct fb_info *info, char __user *buf,
-		size_t count, loff_t *ppos)
-{
-	return 0;
-}
-
-static ssize_t decon_fb_write(struct fb_info *info, const char __user *buf,
-		size_t count, loff_t *ppos)
-{
-	return 0;
-}
-
 int decon_release(struct fb_info *info, int user)
 {
 	struct decon_win *win = info->par;
 	struct decon_device *decon = win->decon;
+
+    // Disable decon_release
+    return 0;
 
 	decon_info("%s + : %d\n", __func__, decon->id);
 
@@ -3398,12 +3389,12 @@ static struct fb_ops decon_fb_ops = {
 	.fb_blank	= decon_blank,
 	.fb_setcolreg	= decon_setcolreg,
 	.fb_fillrect    = cfb_fillrect,
+    .fb_copyarea    = cfb_copyarea, // Use standard linux console framebuffer calls instead of the custom decon ones
+    .fb_imageblit   = cfb_imageblit,
 #ifdef CONFIG_COMPAT
 	.fb_compat_ioctl = decon_compat_ioctl,
 #endif
 	.fb_ioctl	= decon_ioctl,
-	.fb_read	= decon_fb_read,
-	.fb_write	= decon_fb_write,
 	.fb_pan_display	= decon_pan_display,
 	.fb_mmap	= decon_mmap,
 	.fb_release	= decon_release,
@@ -3820,6 +3811,7 @@ static int decon_acquire_window(struct decon_device *decon, int idx)
 	}
 
 	fbinfo->fix.type	= FB_TYPE_PACKED_PIXELS;
+    fbinfo->fix.visual  = FB_VISUAL_TRUECOLOR;
 	fbinfo->fix.accel	= FB_ACCEL_NONE;
 	fbinfo->var.activate	= FB_ACTIVATE_NOW;
 	fbinfo->var.vmode	= FB_VMODE_NONINTERLACED;
@@ -4255,7 +4247,7 @@ static int decon_initial_display(struct decon_device *decon, bool is_colormap)
 	set_bit(dpp_id, &decon->prev_used_dpp);
 	memset(&config, 0, sizeof(struct decon_win_config));
 	config.dpp_parm.addr[0] = fbinfo->fix.smem_start;
-	config.format = DECON_PIXEL_FORMAT_BGRA_8888;
+	config.format = DECON_PIXEL_FORMAT_ARGB_8888;
 	config.src.w = fbinfo->var.xres;
 	config.src.h = fbinfo->var.yres;
 	config.src.f_w = fbinfo->var.xres;
