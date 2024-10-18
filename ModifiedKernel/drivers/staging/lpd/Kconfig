@@ -1,0 +1,37 @@
+# drivers/staging/lpd/Kconfig
+#
+# Copyright (c) 2010-2011 Samsung Electronics Co., Ltd.
+#		http://www.samsung.com/
+#
+# Licensed under GPLv2
+
+config EXYNOS_LPD
+	tristate "Samsung Exynos Low Power Display"
+	default N
+	help
+	  Enable support for Exynos Low Power Display mode.
+
+config EXYNOS_LPD_MEM
+	tristate "Samsung Exynos Low Power Display"
+	depends on EXYNOS_LPD
+	default m
+	help
+	  Enable support for Exynos Low Power Display mode.
+
+config LPD_AUTO_BR
+	tristate "Support Auto Brightness in LPD mode"
+	depends on EXYNOS_LPD
+	default N
+	help
+	  Enable support auto brightness in lpd mode.
+
+config LPD_UPDATE_META
+	tristate "Support instantly meta update"
+	depends on EXYNOS_LPD
+	default N
+
+config LPD_OLED_COMPENSATION
+	tristate "Support oled deburnin"
+	depends on EXYNOS_LPD
+	default N
+
