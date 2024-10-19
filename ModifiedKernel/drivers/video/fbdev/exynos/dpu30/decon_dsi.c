@@ -1292,7 +1292,7 @@ int decon_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
 		break;
 	case 24:
 	case 32:
-		config.format = DECON_PIXEL_FORMAT_ARGB_8888;
+		config.format = DECON_PIXEL_FORMAT_RGBA_8888;
 		break;
 	default:
 		decon_err("%s: Not supported bpp %d\n", __func__,

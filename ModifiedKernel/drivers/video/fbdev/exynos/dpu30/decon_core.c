@@ -4247,7 +4247,7 @@ static int decon_initial_display(struct decon_device *decon, bool is_colormap)
 	set_bit(dpp_id, &decon->prev_used_dpp);
 	memset(&config, 0, sizeof(struct decon_win_config));
 	config.dpp_parm.addr[0] = fbinfo->fix.smem_start;
-	config.format = DECON_PIXEL_FORMAT_ARGB_8888;
+	config.format = DECON_PIXEL_FORMAT_RGBA_8888;
 	config.src.w = fbinfo->var.xres;
 	config.src.h = fbinfo->var.yres;
 	config.src.f_w = fbinfo->var.xres;
