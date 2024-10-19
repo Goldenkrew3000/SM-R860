@@ -287,6 +287,8 @@ uint8_t ifxdhd_cmdline_mac_convert(char c) {
     } else if (c >= 'a' && c <= 'f') {
         return c - 'a' + 10;
     }
+
+    return 0x00;
 }
 
 /* MAC address mangement functions */
@@ -303,7 +305,7 @@ dhd_create_random_mac(char *buf, unsigned int buf_len)
 
     // Convert MAC address cmdline string to 6 uint8_t's, which are then converted to the proper formatting
     for (mac_idx = 0; mac_idx < 6; mac_idx++) {
-        cmdline_mac_addr[i] = (ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * i]) << 4) | ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * i + 1]);
+        cmdline_mac_addr[mac_idx] = (ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * mac_idx]) << 4) | ifxdhd_cmdline_mac_convert(ifxdhd_macaddr[2 * mac_idx + 1]);
     }
     snprintf(buf, buf_len, MAC_CUSTOM_FORMAT, cmdline_mac_addr[0], cmdline_mac_addr[1], cmdline_mac_addr[2], cmdline_mac_addr[3], cmdline_mac_addr[4], cmdline_mac_addr[5]);
 
@@ -339,7 +341,7 @@ dhd_set_macaddr_from_file(dhd_pub_t *dhdp)
 	ret = dhd_read_file(filepath_efs, mac_buf, sizeof(mac_buf) - 1);
 
 	/* Check if the file does not exist or contains invalid data */
-	if (ret || (!ret && strstr(mac_buf, invalid_mac))) {
+    if (ret || (!ret && strstr(mac_buf, invalid_mac))) {
 		/* Generate a new random MAC address */
 		dhd_create_random_mac(mac_buf, sizeof(mac_buf));
 
@@ -353,6 +355,7 @@ dhd_set_macaddr_from_file(dhd_pub_t *dhdp)
 				__FUNCTION__, mac_buf, filepath_efs));
 		}
 	}
+    
 #ifdef PLATFORM_SLP
 	/* Write random MAC address for framework */
 	if (dhd_write_file(filepath_mac, mac_buf, strlen(mac_buf)) < 0) {
