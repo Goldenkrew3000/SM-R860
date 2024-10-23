@@ -16,6 +16,7 @@
 #include "ssp_lpm.h"
 #include "ssp_type_define.h"
 
+int enable_general_lpm_motion = 1; // 1 = Enabled LPM_MOTION while not charging, 0 = Disabled
 
 #ifdef CONFIG_SENSORS_SSP_LPM_MOTION
 //unsigned int lpcharge;
@@ -147,7 +148,6 @@ void set_charger_info(struct ssp_data *data)
 
 void set_lpm_mode(struct ssp_data *data)
 {
-	//if (lpcharge == 1 || fota_mode == 1) {
 	if (is_lpcharge()) {
 		set_charger_info(data);
 		ssp_charging_motion(data, 1);
@@ -155,9 +155,16 @@ void set_lpm_mode(struct ssp_data *data)
 		data->bLpModeEnabled = true;
 		pr_info("[SSP] LPM Charging...\n");
 	} else {
-		data->bLpModeEnabled = false;
-		pr_info("[SSP] Normal Booting OK\n");
-	}
+        if (enable_general_lpm_motion == 1) {
+            ssp_charging_motion(data, 1);
+            ssp_charging_rotation(data, 1);
+            data->bLpModeEnabled = true;
+            pr_info("[SSP] Normal Booting OK, forcing LPM_MOTION\n");
+        } else {
+            data->bLpModeEnabled = false;
+		    pr_info("[SSP] Normal Booting OK\n");
+        }
+    }
 }
 
 int initialize_lpm_motion(struct ssp_data *data)
