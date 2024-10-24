@@ -17,7 +17,7 @@
 #define	VENDOR		"TI"
 #define	CHIP_ID		"OPT3007"
 
-#define CALIBRATION_FILE_PATH		"/efs/FactoryApp/light_cal_data"
+#define CALIBRATION_FILE_PATH		"/vendor/secefs/FactoryApp/light_cal_data"
 #define CALIBRATION_DATA_AMOUNT     4
 
 #define OPT3007_REG_EXPONENT(n)		((n) >> 12)

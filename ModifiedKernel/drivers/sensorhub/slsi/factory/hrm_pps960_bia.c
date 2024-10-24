@@ -30,7 +30,7 @@
 #define CHIP_ID		"PPS960"
 #define MODULE_NAME	"AFE4920"
 
-#define BIA_DATA_FILE_PATH "/efs/FactoryApp/bia_data"  // BIA Parasitic Component Calibration
+#define BIA_DATA_FILE_PATH "/vendor/secefs/FactoryApp/bia_data"  // BIA Parasitic Component Calibration
 
 #define BIA_NAME_R_LENGTH       (10)
 #define BIA_MODEL_R_LENGTH       (10)

@@ -31,8 +31,8 @@
 #define MODULE_NAME	"AFE4920"
 #endif
 
-#define EOL_DATA_FILE_PATH "/efs/FactoryApp/hrm_eol_data"
-#define XTALK2_DATA_FILE_PATH "/efs/FactoryApp/hrm_xtalk2_data"
+#define EOL_DATA_FILE_PATH "/vendor/secefs/FactoryApp/hrm_eol_data"
+#define XTALK2_DATA_FILE_PATH "/vendor/secefs/FactoryApp/hrm_xtalk2_data"
 
 #define HRM_CMD_SELFTEST	0
 #define HRM_CMD_LED_G_IR	1

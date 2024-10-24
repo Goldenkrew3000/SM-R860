@@ -26,9 +26,9 @@
 #define VENDOR		"AKM"
 #define CHIP_ID		"AK09973D"
 
-#define HALL_AUTO_CAL_X_PATH "/efs/FactoryApp/digital_hall_auto_cal_x"
-#define HALL_AUTO_CAL_Y_PATH "/efs/FactoryApp/digital_hall_auto_cal_y"
-#define HALL_AUTO_CAL_Z_PATH "/efs/FactoryApp/digital_hall_auto_cal_z"
+#define HALL_AUTO_CAL_X_PATH "/vendor/secefs/FactoryApp/digital_hall_auto_cal_x"
+#define HALL_AUTO_CAL_Y_PATH "/vendor/secefs/FactoryApp/digital_hall_auto_cal_y"
+#define HALL_AUTO_CAL_Z_PATH "/vendor/secefs/FactoryApp/digital_hall_auto_cal_z"
 
 #define HALL_AUTO_CAL_DATA_NUM		19
 #define HALL_AUTO_CAL_FILE_BUF_LEN	140

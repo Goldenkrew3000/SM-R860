@@ -21,7 +21,7 @@
 #define VENDOR		"STM"
 #define CHIP_ID		"LSM6DSO"
 
-#define CALIBRATION_FILE_PATH	"/efs/FactoryApp/accel_cal_data1"
+#define CALIBRATION_FILE_PATH	"/vendor/secefs/FactoryApp/accel_cal_data1"
 #define CALIBRATION_DATA_AMOUNT	20
 
 #define MAX_ACCEL_1G		4096

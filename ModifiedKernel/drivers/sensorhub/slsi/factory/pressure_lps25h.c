@@ -18,8 +18,8 @@
 //#define	CHIP_ID	"LPS27H"
 #define	CHIP_ID	"LPS28DFW"
 
-#define CALIBRATION_FILE_PATH		"/efs/FactoryApp/baro_delta" //"/csa/sensor/baro_cal_data"
-#define SW_OFFSET_FILE_PATH			"/efs/FactoryApp/baro_sw_offset"
+#define CALIBRATION_FILE_PATH		"/vendor/secefs/FactoryApp/baro_delta" //"/csa/sensor/baro_cal_data"
+#define SW_OFFSET_FILE_PATH			"/vendor/secefs/FactoryApp/baro_sw_offset"
 
 #define	PR_ABS_MAX	8388607		/* 24 bit 2'compl */
 #define	PR_ABS_MIN	-8388608

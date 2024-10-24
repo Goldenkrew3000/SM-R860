@@ -27,7 +27,7 @@
 
 #define VENDOR		"AKM"
 #define CHIP_ID		"AK09918C"
-#define CALIBRATION_FILE_PATH	"/efs/FactoryApp/mag_cal_data"
+#define CALIBRATION_FILE_PATH	"/vendor/secefs/FactoryApp/mag_cal_data"
 
 
 #define GM_AKM_DATA_SPEC_MIN    -16666

@@ -22,7 +22,7 @@
 #define VENDOR		"STM"
 #define CHIP_ID		"LSM6DSO"
 
-#define CALIBRATION_FILE_PATH	"/efs/FactoryApp/gyro_cal_data"
+#define CALIBRATION_FILE_PATH	"/vendor/secefs/FactoryApp/gyro_cal_data"
 #define VERBOSE_OUT 1
 #define CALIBRATION_DATA_AMOUNT	20
 #define DEF_GYRO_FULLSCALE	2000

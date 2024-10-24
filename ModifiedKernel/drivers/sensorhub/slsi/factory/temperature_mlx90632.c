@@ -27,7 +27,7 @@
 #define CHIP_ID		"MLX90632"
 //#define MODULE_NAME	"AFE4920"
 
-#define TEMPERATURE_DATA_FILE_PATH "/efs/FactoryApp/temperature_data"  // TEMPERATURE Parasitic Component Calibration
+#define TEMPERATURE_DATA_FILE_PATH "/vendor/secefs/FactoryApp/temperature_data"  // TEMPERATURE Parasitic Component Calibration
 
 #define TEMPERATURE_NAME_LENGTH             64
 #define TEMPERATURE_VENDOR_LENGTH           64
