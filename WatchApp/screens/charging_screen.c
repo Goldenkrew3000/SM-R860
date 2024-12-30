@@ -11,7 +11,7 @@
 #include <cairo/cairo.h>
 #include <pango/pangocairo.h>
 #include "charging_screen.h"
-#include "utils.h"
+#include "../utils.h"
 #define USE_FREETYPE 1
 
 // Global framebuffer variables
@@ -33,12 +33,14 @@ extern int fb_alpha_length;
 extern char* fb_ptr;
 
 // Global variables within this file
-pthread_mutex_t mut_outer_circle_animation;
-cairo_t* cairo_context;
-int outerCircleMode = 2; // Outer circle mode. 1 = continous line, 2 = rotating dots
+static pthread_mutex_t mut_outer_circle_animation;
+static cairo_t* cairo_context;
+static bool isRunning;
+static int outerCircleMode = 1; // Outer circle mode. 1 = continous line, 2 = rotating dots
 
 void charging_screen_display() {
     printf("%s +\n", __func__);
+    isRunning = true;
 
     // Create cairo surface
     cairo_surface_t* cairo_surface;
@@ -75,12 +77,9 @@ void charging_screen_display() {
         usleep(35 * 1000);
     }
 
-
-
-
     // Poll the battery percentage every 5 seconds, and if it changes, update the text and the inner ring
     int last_battery_percentage = 0;
-    for (;;) {
+    while (isRunning) {
         battery_percentage = utils_read_battery_percentage();
         if (battery_percentage != last_battery_percentage) { // TODO error checking
             pthread_mutex_lock(&mut_outer_circle_animation);
@@ -90,10 +89,21 @@ void charging_screen_display() {
             pthread_mutex_unlock(&mut_outer_circle_animation);
         }
         last_battery_percentage = battery_percentage;
-        sleep(5);
+
+        // Check whether the wireless charger is still connected
+        int wireless_charger_connected = utils_read_wireless_charger_connected();
+        if (wireless_charger_connected == 0) {
+            printf("%s: Wireless charger has been disconnected.\n", __func__);
+            isRunning = false;
+        } else if (wireless_charger_connected == 2) {
+            sleep(5); // Charger is still connected
+        } else if (wireless_charger_connected == 3) {
+            // TODO error handline
+        }
     }
 
-
+    // Stop the outer circle animation thread
+    pthread_cancel(thr_outer_circle_animation);
 
     // -
     
@@ -198,7 +208,7 @@ void charging_screen_draw_text(int percentage) {
     pango_font_description_free(pango_font_description);
 
     // Create charging text, and calculate it's size
-    char buf_text_charging[16];
+    char buf_text_charging[32];
     snprintf(buf_text_charging, sizeof(buf_text_charging), "충전 중\n%d%%", percentage);
     pango_layout_set_text(pango_layout, buf_text_charging, -1);
     int text_charging_width = 0;
@@ -206,7 +216,6 @@ void charging_screen_draw_text(int percentage) {
     pango_layout_get_size(pango_layout, &text_charging_width, &text_charging_height); // Note this outputs Pango pixel size, which is 1/1024th of a pixel
     text_charging_width /= 1024;
     text_charging_height /= 1024;
-    printf("Charging text width and height: %dx%d\n", text_charging_width, text_charging_height);
 
     // Clear text space so the new text doesn't overlap the old text
     cairo_set_source_rgb(cairo_context, 0, 0, 0);

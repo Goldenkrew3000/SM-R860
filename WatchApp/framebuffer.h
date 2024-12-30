@@ -3,5 +3,6 @@
 
 void* framebuffer_refresh_fb(void* arg);
 int framebuffer_init();
+void framebuffer_deinit();
 
 #endif

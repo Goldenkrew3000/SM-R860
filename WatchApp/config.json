@@ -1,0 +1,18 @@
+{
+    "charging_animation_outer_ring": "1",
+    "timezone": "Australia/Brisbane",
+    "time_format": "ko",
+    "resources": {
+        "a": "b"
+    },
+    "wifi": {
+        "sta_ssid": "SSID",
+        "sta_pass": "password",
+        "ap_ssid": "R860_AP",
+        "ap_pass": "password"
+    },
+    "ntp": {
+        "server": "au.pool.ntp.org",
+        "port": "123"
+    }
+}

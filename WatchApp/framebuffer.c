@@ -41,7 +41,7 @@ void* framebuffer_refresh_fb(void* arg) {
     assert(fd_fb >= 0);
     assert(ioctl(fd_fb, FBIOGET_VSCREENINFO, &vinfo) >= 0);
 
-    // Refresh the framebuffer
+    // Refresh the framebuffer (60 times a second)
     while (true) {
         ioctl(fd_fb, FBIOPAN_DISPLAY, &vinfo);
         usleep(16666);
@@ -91,4 +91,16 @@ int framebuffer_init() {
 
     printf("%s -\n", __func__);
     return 1;
+}
+
+// Deinitialize the framebuffer by freeing the memory mapped area
+void framebuffer_deinit() {
+    printf("%s +\n", __func__);
+
+    // Unmap the memory mapped framebuffer
+    long fb_size = fb_height * fb_linelength;
+    munmap(fb_ptr, fb_size);
+
+    printf("%s -\n", __func__);
+    return;
 }

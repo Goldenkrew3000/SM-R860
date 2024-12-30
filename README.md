@@ -1,9 +1,10 @@
 # SM-R860 Watch Project
-## A sort-of reverse engineering of the SM-R860 and lowering it's requirement of a companion phone app
+## A sort-of reverse engineering of the SM-R860 and removing the need for a phone app
 
 # Sub-Projects:
 ## WatchApp
-- A program that runs on bootup to display the time (Fetched from NTP) or a charging screen when placed on a charger
+- A new watch interface that runs directly on the framebuffer of the downstream kernel (Includes a charging screen) <br>
+This code is licensed under GPLv2
 
 ## Information
 - Separate information about the device regarding certain aspects that doesn't fit into any other category
