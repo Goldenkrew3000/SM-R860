@@ -1,5 +1,6 @@
 #ifndef _INPUT_HANDLER_H
 #define _INPUT_HANDLER_H
+#include <signal.h>
 
 // Event names
 #define EVENT_NAME_POWER            "sec-pmic-key"
@@ -14,6 +15,10 @@
 #define EVENT_SECONDARY_KEY         580
 
 // TODO Touchscreen and motion
+
+int input_handler_query_input_devices();
+void* input_handler_monitor_power_button(void* arg);
+void* input_handler_monitor_secondary_button(void* arg);
 
 #endif
 

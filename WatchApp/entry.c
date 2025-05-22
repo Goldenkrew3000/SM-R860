@@ -8,6 +8,7 @@
 #include "network_handler.h"
 #include "config_handler.h"
 #include "ntp_handler.h"
+#include "input_handler.h"
 #include "screens/charging_screen.h"
 #include "screens/shutdown_screen.h"
 #include "duck_watchface.h"
@@ -16,13 +17,30 @@
 
 #include <sys/types.h>
 
+#include <linux/futex.h>
+#include <sys/syscall.h>
+#include <stdatomic.h>
+#include <unistd.h>
+
+//extern atomic_int sigPower;
+
+void* monitor(void*) {
+    //while (1) {
+        //int val = atomic_load(&sigPower);
+        //if (val == 1) {
+        //    printf("Caught!!\n");
+        //};
+        //syscall(SYS_futex, &sigPower, FUTEX_WAIT, val, NULL, NULL, 0);
+   // }
+}
+
 void charger_mode();
 void general_mode();
 
 int main(void) {
     printf("%s +\n", __func__);
-    printf("Malexty Watch Software for SM-R860\n");
-    printf("Goldenkrew3000 2024\n");
+    printf("Hojuix Watch Software for SM-R860\n");
+    printf("Hojuix.org 2024-2025\n");
 
     // Check boot mode, and launch into specific mode
     int bootmode = utils_check_bootmode();
@@ -113,6 +131,18 @@ void general_mode() {
     //char* haha = ntp_getTimeString();
     //printf("time: %s\n", haha);
     printf("CURRENT: %d\n", utils_read_battery_current());
+
+    // Scan event devices
+    input_handler_query_input_devices();
+
+    // Start event threads
+    pthread_t thr_event_power;
+    pthread_create(&thr_event_power, NULL, input_handler_monitor_power_button, NULL);
+    pthread_t thr_event_secondary;
+    pthread_create(&thr_event_secondary, NULL, input_handler_monitor_secondary_button, NULL);
+
+    pthread_t b;
+    pthread_create(&b, NULL, monitor, NULL);
 
     // Display watchface
     //duck_watchface_display();

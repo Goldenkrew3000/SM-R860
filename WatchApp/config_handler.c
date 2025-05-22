@@ -4,7 +4,7 @@
 #include <cjson/cJSON.h>
 #include "config_handler.h"
 
-const char* configFilename = "../config.json";
+const char* configFilename = "config.json";
 static char buf_configFile[4096];
 
 char* config_timezone;
