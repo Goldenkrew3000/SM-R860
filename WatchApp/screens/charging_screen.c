@@ -100,6 +100,7 @@ void charging_screen_display() {
         } else if (wireless_charger_connected == 3) {
             // TODO error handline
         }
+	usleep(35 * 1000);
     }
 
     // Stop the outer circle animation thread
