@@ -68,8 +68,8 @@ void charger_mode() {
     }
 
     // Start the framebuffer refresher
-    pthread_t thr_fb_refresh;
-    pthread_create(&thr_fb_refresh, NULL, framebuffer_refresh_fb, NULL);
+    //pthread_t thr_fb_refresh;
+    //pthread_create(&thr_fb_refresh, NULL, framebuffer_refresh_fb, NULL);
 
     // Initialize the framebuffer (Essentially fetch it's information and memory map it)
     if (framebuffer_init() == 2) {
@@ -79,7 +79,7 @@ void charger_mode() {
 
     // Display the charging screen, and when it exits (Watch disconnected from charger), display the shutdown screen
     charging_screen_display();
-    shutdown_screen_display();
+    shutdown_screen_display(); // TODO add manual framebuffer refresh
 
     // Unmap the framebuffer
     framebuffer_deinit();
@@ -102,8 +102,8 @@ void general_mode() {
         utils_syscall_reboot();
     }
 
-    pthread_t thr_fb_refresh;
-    pthread_create(&thr_fb_refresh, NULL, framebuffer_refresh_fb, NULL);
+    //pthread_t thr_fb_refresh;
+    //pthread_create(&thr_fb_refresh, NULL, framebuffer_refresh_fb, NULL);
 
     if (framebuffer_init() == 2) {
         printf("%s: Fatal error occured initializing Exynos framebuffer.\n", __func__);
@@ -133,16 +133,16 @@ void general_mode() {
     printf("CURRENT: %d\n", utils_read_battery_current());
 
     // Scan event devices
-    input_handler_query_input_devices();
+    //input_handler_query_input_devices();
 
     // Start event threads
-    pthread_t thr_event_power;
-    pthread_create(&thr_event_power, NULL, input_handler_monitor_power_button, NULL);
-    pthread_t thr_event_secondary;
-    pthread_create(&thr_event_secondary, NULL, input_handler_monitor_secondary_button, NULL);
+    //pthread_t thr_event_power;
+    //pthread_create(&thr_event_power, NULL, input_handler_monitor_power_button, NULL);
+    //pthread_t thr_event_secondary;
+    //pthread_create(&thr_event_secondary, NULL, input_handler_monitor_secondary_button, NULL);
 
-    pthread_t b;
-    pthread_create(&b, NULL, monitor, NULL);
+    //pthread_t b;
+    //pthread_create(&b, NULL, monitor, NULL);
 
     // Display watchface
     //duck_watchface_display();

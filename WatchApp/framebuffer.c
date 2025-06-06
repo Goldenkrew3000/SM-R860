@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
+#include <pthread.h>
 
 // Global framebuffer variables
 int fb_width = 0;
@@ -26,28 +27,17 @@ int fb_alpha_offset = 0;
 int fb_alpha_length = 0;
 char* fb_ptr = NULL;
 
+// Framebuffer refresh global variables
+int fd_fb = 0;
+struct fb_var_screeninfo vinfo;
+static pthread_mutex_t mut_framebuffer_refresh;
+
 // Refresh the framebuffer
-void* framebuffer_refresh_fb(void* arg) {
-    printf("%s +\n", __func__);
-    
-    // Open framebuffer
-    int fd_fb = open("/dev/fb0", O_RDWR);
-    if (!fd_fb) {
-        printf("Could not open framebuffer.\n");
-    }
-
-    // Fetch framebuffer info
-    struct fb_var_screeninfo vinfo;
-    assert(fd_fb >= 0);
-    assert(ioctl(fd_fb, FBIOGET_VSCREENINFO, &vinfo) >= 0);
-
-    // Refresh the framebuffer (60 times a second)
-    while (true) {
-        ioctl(fd_fb, FBIOPAN_DISPLAY, &vinfo);
-        usleep(16666);
-    }
-
-    printf("%s -\n", __func__);
+void framebuffer_refresh() {
+    // Technically this doesn't need a mutex, but I feel a little better using one just for safety
+    pthread_mutex_lock(&mut_framebuffer_refresh);
+    ioctl(fd_fb, FBIOPAN_DISPLAY, &vinfo);
+    pthread_mutex_unlock(&mut_framebuffer_refresh);
 }
 
 // Initialize the framebuffer by fetching all the required data, and memory mapping it (Returns 1 if success, 2 if failed)
@@ -55,14 +45,14 @@ int framebuffer_init() {
     printf("%s +\n", __func__);
 
     // Open framebuffer
-    int fd_fb = open("/dev/fb0", O_RDWR);
+    fd_fb = open("/dev/fb0", O_RDWR);
     if (!fd_fb) {
         printf("Framebuffer could not be opened.\n");
         return 2;
     }
 
     // Fetch framebuffer info
-    struct fb_var_screeninfo vinfo;
+    //struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
     ioctl(fd_fb, FBIOGET_VSCREENINFO, &vinfo);
     ioctl(fd_fb, FBIOGET_FSCREENINFO, &finfo);
@@ -88,6 +78,9 @@ int framebuffer_init() {
     // Memory map the framebuffer
     long fb_size = fb_height * fb_linelength;
     fb_ptr = mmap(0, fb_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb, 0);
+
+    // Initialize framebuffer refresh mutex
+    pthread_mutex_init(&mut_framebuffer_refresh, NULL);
 
     printf("%s -\n", __func__);
     return 1;

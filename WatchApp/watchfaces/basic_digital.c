@@ -13,6 +13,7 @@
 #include "basic_digital.h"
 #include "../utils.h"
 #include "../ntp_handler.h"
+#include "../framebuffer.h"
 #define USE_FREETYPE 1
 
 extern int fb_width;
@@ -44,9 +45,11 @@ void basic_digital_screen_display() {
     cairo_surface = cairo_image_surface_create_for_data(fb_ptr, CAIRO_FORMAT_ARGB32, fb_width, fb_height, cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, fb_width));
     cairo_context = cairo_create(cairo_surface);
 
+    // Clear framebuffer
     cairo_set_operator(cairo_context, CAIRO_OPERATOR_CLEAR);
     cairo_paint(cairo_context);
     cairo_set_operator(cairo_context, CAIRO_OPERATOR_OVER);
+    framebuffer_refresh();
 
     // Initialize Pango, create layout, and load font
     PangoLayout* pango_time_layout;
@@ -111,6 +114,9 @@ void basic_digital_screen_display() {
                 cairo_set_source_rgb(cairo_context, 1, 1, 1);
                 cairo_move_to(cairo_context, (fb_width / 2) - (text_charge_width / 2), 325 - (text_charge_height / 2)); // Was 325
                 pango_cairo_show_layout(cairo_context, pango_charge_layout);
+
+                // Refresh the framebuffer
+                framebuffer_refresh();
             }
 
             // Wait a second for refresh

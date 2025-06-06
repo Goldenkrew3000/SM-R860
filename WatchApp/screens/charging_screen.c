@@ -12,6 +12,7 @@
 #include <pango/pangocairo.h>
 #include "charging_screen.h"
 #include "../utils.h"
+#include "../framebuffer.h"
 #define USE_FREETYPE 1
 
 // Global framebuffer variables
@@ -53,6 +54,7 @@ void charging_screen_display() {
     cairo_set_operator(cairo_context, CAIRO_OPERATOR_CLEAR);
     cairo_paint(cairo_context);
     cairo_set_operator(cairo_context, CAIRO_OPERATOR_OVER);
+    framebuffer_refresh();
 
     // Set cairo to draw lines with rounded edges
     cairo_set_line_cap(cairo_context, CAIRO_LINE_CAP_ROUND);
@@ -74,6 +76,7 @@ void charging_screen_display() {
         pthread_mutex_lock(&mut_outer_circle_animation);
         charging_screen_draw_inner_circle(i);
         pthread_mutex_unlock(&mut_outer_circle_animation);
+        framebuffer_refresh();
         usleep(35 * 1000);
     }
 
@@ -86,6 +89,7 @@ void charging_screen_display() {
             //charging_screen_clear_inner_circle(); // Theoretically this isn't needed since the inner circle never goes down
             charging_screen_draw_inner_circle(battery_percentage);
             charging_screen_draw_text(battery_percentage);
+            framebuffer_refresh();
             pthread_mutex_unlock(&mut_outer_circle_animation);
         }
         last_battery_percentage = battery_percentage;
@@ -100,7 +104,7 @@ void charging_screen_display() {
         } else if (wireless_charger_connected == 3) {
             // TODO error handline
         }
-	usleep(35 * 1000);
+	    usleep(35 * 1000);
     }
 
     // Stop the outer circle animation thread
@@ -156,8 +160,8 @@ void charging_screen_clear_inner_circle() {
 }
 
 void* charging_screen_draw_outer_circle_animation(void* arg) {
-        int angle = 0;
-        while (true) {
+    int angle = 0;
+    while (true) {
         pthread_mutex_lock(&mut_outer_circle_animation);
         if (outerCircleMode == 1) {
             charging_screen_draw_outer_circle(angle, 10, 1, 0, 0);
@@ -191,6 +195,7 @@ void* charging_screen_draw_outer_circle_animation(void* arg) {
         if (angle >= 361) {
             angle = 0;
         }
+        framebuffer_refresh();
         usleep(50 * 1000);
     }
 }
